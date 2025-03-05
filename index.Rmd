@@ -79,7 +79,7 @@ Column {data-width=500}
   theme_classic()                                      # Change the theme?
 ```
 
-### My timbre-based self-similarity change pls
+### My timbre-based self-similarity change pls what
 Column {data-width=500}
 
 ```{r}
