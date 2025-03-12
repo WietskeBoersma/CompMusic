@@ -73,7 +73,7 @@ grid.arrange(chroma1, chroma2, ncol = 2)
 Column {data-width=500}
 
 ```{r}
-"features/wietske-b-1.json" |>                           # Change the track
+cepto1 <- "features/wietske-b-1.json" |>                           # Change the track
   compmus_mfccs(norm = "euclidean") |>                  # Change the norm
   ggplot(aes(x = time, y = mfcc, fill = value)) + 
   geom_raster() +
@@ -84,12 +84,26 @@ Column {data-width=500}
   scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
   labs(x = "Time (s)", y = "Coefficient Number", fill = NULL) +
   theme_classic()                                      # Change the theme?
+
+cepto2 <- "features/wietske-b-2.json" |>                           # Change the track
+  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
+  ggplot(aes(x = time, y = mfcc, fill = value)) + 
+  geom_raster() +
+  scale_y_continuous(
+    breaks = 0:12,
+    minor_breaks = NULL
+  ) +
+  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
+  labs(x = "Time (s)", y = "Coefficient Number", fill = NULL) +
+  theme_classic() # Change the theme?
+
+grid.arrange(cepto1, cepto2, ncol = 2)
 ```
 
 ### My chroma-based self-similarity
 
 ```{r}
-"features/wietske-b-1.json" |>                           # Change the track
+selfc1 <- "features/wietske-b-1.json" |>                           # Change the track
   compmus_chroma(norm = "euclidean") |>                 # Change the norm
   compmus_self_similarity(
     feature = pc,
@@ -100,12 +114,26 @@ Column {data-width=500}
   scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
   labs(x = "Time (s)", y = NULL, fill = NULL) +
   theme_classic()                                      # Change the theme?
+
+selfc2 <- "features/wietske-b-2.json" |>                           # Change the track
+  compmus_chroma(norm = "euclidean") |>                 # Change the norm
+  compmus_self_similarity(
+    feature = pc,
+    distance = "euclidean"                             # Change the distance
+  ) |>   
+  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
+  geom_raster() +
+  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
+  labs(x = "Time (s)", y = NULL, fill = NULL) +
+  theme_classic()                                      # Change the theme?
+
+grid.arrange(selfc1, selfc2, ncol = 2)
 ```
 
 ### My timbre-based self-similarity change pls what
 
 ```{r}
-"features/wietske-b-1.json" |>                           # Change the track
+selft1 <- "features/wietske-b-1.json" |>                           # Change the track
   compmus_mfccs(norm = "euclidean") |>                  # Change the norm
   compmus_self_similarity(
     feature = mfcc,
@@ -116,6 +144,20 @@ Column {data-width=500}
   scale_fill_viridis_c(option = "inferno", guide = "none") +               # Change the colours?
   labs(x = "Time (s)", y = NULL, fill = NULL) +
   theme_classic()                                      # Change the theme?
+
+selft2 <- "features/wietske-b-2.json" |>                           # Change the track
+  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
+  compmus_self_similarity(
+    feature = mfcc,
+    distance = "euclidean"                             # Change the distance
+  ) |>   
+  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
+  geom_raster() +
+  scale_fill_viridis_c(option = "inferno", guide = "none") +               # Change the colours?
+  labs(x = "Time (s)", y = NULL, fill = NULL) +
+  theme_classic()                                      # Change the theme?
+
+grid.arrange(selft1, selft2, ncol = 2)
 ```
 
 ### My chordogram
@@ -191,7 +233,7 @@ circshift(major_key, 9), "C#:min", circshift(minor_key, 1), "E:maj",
 circshift(major_key, 4), "G#:min", circshift(minor_key, 8), "B:maj",
 circshift(major_key, 11), "D#:min", circshift(minor_key, 3) )
 
-"features/wietske-b-1.json" |> 
+chord1 <- "features/wietske-b-1.json" |> 
 compmus_chroma(norm = "manhattan") |>
 compmus_match_pitch_templates(
   chord_templates, 
@@ -207,47 +249,100 @@ ggplot(aes(x = time, y = name, fill = d)) +
 # Try different norms (and match it with what you used in `compmus_chroma`)
 # Try different distance metrics ) 
 
+
+chord2 <- "features/wietske-b-2.json" |> 
+compmus_chroma(norm = "manhattan") |>
+compmus_match_pitch_templates(
+  chord_templates, 
+  norm = "identity",
+  distance = "cosine"
+)|> 
+
+ggplot(aes(x = time, y = name, fill = d)) + 
+  geom_raster() + 
+  scale_fill_viridis_c(guide = "none") + 
+  labs(x = "Time (s)", y = "Template", fill = NULL) + 
+  theme_classic() 
+# Try different norms (and match it with what you used in `compmus_chroma`)
+# Try different distance metrics ) 
+
+grid.arrange(chord1, chord2, ncol = 2)
 ```
 
 ### Novelty functions: Energy
 
 ```{r}
-"features/wietske-b-1.json" |>
+nove1 <- "features/wietske-b-1.json" |>
   compmus_energy_novelty() |> 
   ggplot(aes(t, novelty)) +
   geom_line() +
   theme_minimal() +
   labs(x = "Time (s)", y = "Energy Novelty")
+
+nove2 <- "features/wietske-b-2.json" |>
+  compmus_energy_novelty() |> 
+  ggplot(aes(t, novelty)) +
+  geom_line() +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "Energy Novelty")
+
+grid.arrange(nove1, nove2, ncol = 2)
 ```
 
 ### Novelty functions: Spectral
 
 ```{r}
-"features/wietske-b-1.json" |>
+novs1 <- "features/wietske-b-1.json" |>
   compmus_spectral_novelty() |> 
   ggplot(aes(t, novelty)) +
   geom_line() +
   theme_minimal() +
   labs(x = "Time (s)", y = "Spectral Novelty")
+
+novs2 <- "features/wietske-b-2.json" |>
+  compmus_spectral_novelty() |> 
+  ggplot(aes(t, novelty)) +
+  geom_line() +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "Spectral Novelty")
+
+grid.arrange(novs1, novs2, ncol = 2)
 ```
 
 ### Tempograms: cyclic is false
 
 ```{r}
-"features/wietske-b-1.json" |>
+tempo1f <- "features/wietske-b-1.json" |>
   compmus_tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |>
   ggplot(aes(x = time, y = bpm, fill = power)) +
   geom_raster() +
   scale_fill_viridis_c(guide = "none") +
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
+
+tempo2f <- "features/wietske-b-2.json" |>
+  compmus_tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |>
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+
+grid.arrange(tempo1f, tempo2f, ncol = 2)
 ```
 
 ### Tempograms: cyclic is true
 
 ```{r} 
-"features/wietske-b-1.json" |> compmus_tempogram(window_size
+tempo1t <- "features/wietske-b-1.json" |> compmus_tempogram(window_size
 = 8, hop_size = 1, cyclic = TRUE) |> ggplot(aes(x = time, y = bpm,
 fill = power)) + geom_raster() + scale_fill_viridis_c(guide = "none") +
 labs(x = "Time (s)", y = "Tempo (BPM)") + theme_classic()
+
+tempo2t <- "features/wietske-b-2.json" |> compmus_tempogram(window_size
+= 8, hop_size = 1, cyclic = TRUE) |> ggplot(aes(x = time, y = bpm,
+fill = power)) + geom_raster() + scale_fill_viridis_c(guide = "none") +
+labs(x = "Time (s)", y = "Tempo (BPM)") + theme_classic()
+
+grid.arrange(tempo1t, tempo2t, ncol = 2)
 ```
