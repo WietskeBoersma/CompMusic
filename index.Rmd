@@ -1,36 +1,27 @@
 ---
-title: "Computational Musicology Storyboard"
-date: "2025-02-26"
-output: 
-  flexdashboard::flex_dashboard:
-    storyboard: true
-    theme: cerulean
-editor_options: 
-  markdown: 
-    wrap: 72
+title: "Get Started"
+output: flexdashboard::flex_dashboard
 ---
 
 ```{r setup, include=FALSE}
 
 library(tidyverse) 
+library(flexdashboard)
 library(gridExtra) 
 library(rjson) 
 library(ggplot2)
 source("compmus.R")
 knitr::opts_chunk$set(echo = FALSE)
 ```
+Visualizations {data-icon="fa-signal"}
+===================================== 
 
-## Analyzing my AI-generated MP3-files
-
-Hier komt een klein inleidend stukje over mijn files, hoe ik ze heb
-gegenereerd, welke prompts ik heb gebruikt en wat mijn verwachtingen
-zijn.
-
-## Plots
+Column 1
+--------------------------------------------------
 
 ### Chromagram using "wietske-b-1.json" file and ceptogram
 
-```{r fig.height=25, fig.width=35}
+```{r}
 chroma1 <- "features/wietske-b-1.json" |>                           # Change the track
   compmus_chroma(norm = "manhattan") |>                 # Change the norm
   ggplot(aes(x = time, y = pc, fill = value)) + 
@@ -100,6 +91,24 @@ cepto2 <- "features/wietske-b-2.json" |>                           # Change the 
 grid.arrange(cepto1, cepto2, ncol = 2)
 ```
 
+Column 1
+--------------------------------------------------
+
+
+### Analyzing my AI-generated MP3-files
+
+Hier komt een klein inleidend stukje over mijn files, hoe ik ze heb
+gegenereerd, welke prompts ik heb gebruikt en wat mijn verwachtingen
+zijn.
+
+
+Self-similarity {data-icon="fa-th-large"}
+===================================== 
+
+Column 1
+--------------------------------------------------
+
+
 ### My chroma-based self-similarity
 
 ```{r}
@@ -130,7 +139,11 @@ selfc2 <- "features/wietske-b-2.json" |>                           # Change the 
 grid.arrange(selfc1, selfc2, ncol = 2)
 ```
 
-### My timbre-based self-similarity change pls what
+Column 2
+--------------------------------------------------
+
+
+### My timbre-based self-similarity
 
 ```{r}
 selft1 <- "features/wietske-b-1.json" |>                           # Change the track
@@ -159,6 +172,9 @@ selft2 <- "features/wietske-b-2.json" |>                           # Change the 
 
 grid.arrange(selft1, selft2, ncol = 2)
 ```
+
+Chordogram {data-icon="fa-music"}
+===================================== 
 
 ### My chordogram
 
@@ -269,7 +285,13 @@ ggplot(aes(x = time, y = name, fill = d)) +
 grid.arrange(chord1, chord2, ncol = 2)
 ```
 
-### Novelty functions: Energy
+Novelty functions {data-icon="fa-music"}
+===================================== 
+
+Column 1
+--------------------------------------------------
+
+### Novelty function: Energy-based
 
 ```{r}
 nove1 <- "features/wietske-b-1.json" |>
@@ -289,7 +311,11 @@ nove2 <- "features/wietske-b-2.json" |>
 grid.arrange(nove1, nove2, ncol = 2)
 ```
 
-### Novelty functions: Spectral
+Column 2
+--------------------------------------------------
+
+
+### Novelty function: Spectral-based
 
 ```{r}
 novs1 <- "features/wietske-b-1.json" |>
@@ -309,7 +335,14 @@ novs2 <- "features/wietske-b-2.json" |>
 grid.arrange(novs1, novs2, ncol = 2)
 ```
 
-### Tempograms: cyclic is false snap je
+Tempograms {data-icon="fa-drum"}
+===================================== 
+
+Column 1 
+--------------------------------------------------
+
+
+### Tempograms: cyclic=false
 
 ```{r}
 tempo1f <- "features/wietske-b-1.json" |>
@@ -331,7 +364,10 @@ tempo2f <- "features/wietske-b-2.json" |>
 grid.arrange(tempo1f, tempo2f, ncol = 2)
 ```
 
-### Tempograms: cyclic is true
+Column 1 
+--------------------------------------------------
+
+### Tempograms: cyclic=true
 
 ```{r} 
 tempo1t <- "features/wietske-b-1.json" |> compmus_tempogram(window_size
@@ -347,8 +383,8 @@ labs(x = "Time (s)", y = "Tempo (BPM)") + theme_classic()
 grid.arrange(tempo1t, tempo2t, ncol = 2)
 ```
 
-### Week 12: Pre-processing
-```{r}
+
+```{r, echo=FALSE}
 library(tidymodels)
 library(ggdendro)
 library(heatmaply)
@@ -392,7 +428,10 @@ cluster_juice <-
 
 compmus_dist <- dist(cluster_juice, method = "euclidean")
 ```
-### Hierarchical clustering
+
+Week 12: Hierarchical Clustering {data-icon="fa-music"}
+===================================== 
+
 ```{r}
 
 compmus_dist |> 
@@ -400,7 +439,10 @@ compmus_dist |>
   dendro_data() |>
   ggdendrogram()
 ```
-### Heatmap
+
+Week 12: Heat Map {data-icon="fa-chart-area"}
+===================================== 
+
 ```{r}
 heatmaply(
   cluster_juice,
@@ -410,7 +452,10 @@ heatmaply(
 )
 ```
 
-### Classification
+
+Week 12: Classification {data-icon="fa-chart-area"}
+===================================== 
+
 ```{r}
 compmus2025_filtered <- 
   compmus2025 |> filter(!is.na(ai)) |> 
@@ -455,7 +500,9 @@ classification_knn |> get_pr()
 ```
 
 
-### Random Forest
+Week 12: Random Forest {data-icon="fa-chart-area"}
+===================================== 
+
 ```{r}
 forest_model <-
   rand_forest() |>
