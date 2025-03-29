@@ -1,5 +1,5 @@
 ---
-title: "Get Started"
+title: "Computational Musicology Storyboard 30-03-2025"
 output: flexdashboard::flex_dashboard
 ---
 
@@ -13,15 +13,158 @@ library(ggplot2)
 source("compmus.R")
 knitr::opts_chunk$set(echo = FALSE)
 ```
-Visualizations {data-icon="fa-signal"}
-===================================== 
 
-Column 1
---------------------------------------------------
+# Introduction {data-icon="fa-headphones"}
 
-### Chromagram using "wietske-b-1.json" file and ceptogram lala
+Welcome to my portfolio for Computational Musicology!
 
-```{r}
+For this portfolio I analyzed two songs using a variety of different metrics. These metrics helped me understand how my songs were structured, including aspects such as timbre and tempo. By applying computational methods, I was able to extract meaningful insights and identify patterns within the songs. The analysis provided a deeper understanding of how musical elements come together to form the unique sound of each track.
+
+For this project I used an AI-tool to generate the tunes, namely JenAI, the idea of these two prompts for the tunes were specified by using ChatGPT (I made two prompts myself and let ChatGPT generate even more specific prompts)
+
+#### Song #1
+
+For 'wietske-b-1.mp3' I used: Create a modern indie-pop track with a warm, intimate vibe, blending organic acoustic elements with subtle electronic textures. The song should feature delicate yet expressive string arrangements (such as a small string ensemble or chamber-style strings) that add depth and emotion without overpowering the core melody. The instrumentation should include gentle guitar or piano, soft percussion, and atmospheric pads or synths to enhance the dreamy, introspective feel. The track should be between 2 to 4 minutes long, suitable for a public broadcaster.
+
+And this is what it sounds like:
+
+```{r, echo=FALSE, results="asis"}
+library(jsonlite)
+
+# Load JSON
+json_data <- fromJSON("features/wietske-b-1.json")
+
+# Extract the MP3 file name
+audio_file <- json_data$metadata$tags$file_name
+
+# Construct path (since Shiny serves files from 'www/')
+audio_path <- paste0("www/", audio_file)
+
+# Output the HTML audio player
+cat(paste0('<audio controls preload="none">
+              <source src="', audio_path, '" type="audio/mpeg">
+              Your browser does not support the audio element.
+           </audio>'))
+```
+
+#### Song #2
+
+For 'wietske-b-2.mp3' I used: Create a high-energy pop-rock track infused with modern synth elements. The song should feature driving drums, a tight bassline, and rhythmic electric guitars with a mix of clean and overdriven tones. Synths should add depth with lush pads, arpeggiated sequences, and subtle electronic effects. The track should feel anthemic and uplifting, with a dynamic build and a powerful, memorable chorus. 2-4 minutes.
+
+And this is what it sounds like:
+
+```{r, echo=FALSE, results="asis"}
+library(jsonlite)
+
+# Load JSON
+json_data <- fromJSON("features/wietske-b-2.json")
+
+# Extract the MP3 file name
+audio_file <- json_data$metadata$tags$file_name
+
+# Construct path (since Shiny serves files from 'www/')
+audio_path <- paste0("www/", audio_file)
+
+# Output the HTML audio player
+cat(paste0('<audio controls preload="none">
+              <source src="', audio_path, '" type="audio/mpeg">
+              Your browser does not support the audio element.
+           </audio>'))
+
+```
+
+# Timbre {data-icon="fa-palette"}
+
+Visual Song #1
+-----------------------------------------------------------------------
+
+### Ceptogram Song #1
+```{r,echo=FALSE}
+cepto1 <- "features/wietske-b-1.json" |>                           # Change the track
+  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
+  ggplot(aes(x = time, y = mfcc, fill = value)) + 
+  geom_raster() +
+  scale_y_continuous(
+    breaks = 0:12,
+    minor_breaks = NULL
+  ) +
+  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
+  labs(x = "Time (s)", y = "Coefficient Number", fill = NULL) +
+  theme_classic()                                      # Change the theme?
+
+print(cepto1)
+```
+
+### Song #1 Timbre-based Self-Similarity Matrix
+```{r, echo=FALSE}
+selft1 <- "features/wietske-b-1.json" |>                           # Change the track
+  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
+  compmus_self_similarity(
+    feature = mfcc,
+    distance = "euclidean"                             # Change the distance
+  ) |>   
+  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
+  geom_raster() +
+  scale_fill_viridis_c(option = "inferno", guide = "none") +               # Change the colours?
+  labs(x = "Time (s)", y = NULL, fill = NULL) +
+  theme_classic()                                      # Change the theme?
+
+print(selft1)
+```
+
+Visuals Song #2
+-----------------------------------------------------------------------
+
+### Ceptogram Song #2
+
+```{r, echo=FALSE}
+cepto2 <- "features/wietske-b-2.json" |>                           # Change the track
+  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
+  ggplot(aes(x = time, y = mfcc, fill = value)) + 
+  geom_raster() +
+  scale_y_continuous(
+    breaks = 0:12,
+    minor_breaks = NULL
+  ) +
+  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
+  labs(x = "Time (s)", y = "Coefficient Number", fill = NULL) +
+  theme_classic() # Change the theme?
+
+print(cepto2)
+```
+
+### Song #2 Timbre-based
+```{r, echo=FALSE}
+selft2 <- "features/wietske-b-2.json" |>                           # Change the track
+  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
+  compmus_self_similarity(
+    feature = mfcc,
+    distance = "euclidean"                             # Change the distance
+  ) |>   
+  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
+  geom_raster() +
+  scale_fill_viridis_c(option = "inferno", guide = "none") +               # Change the colours?
+  labs(x = "Time (s)", y = NULL, fill = NULL) +
+  theme_classic()                                      # Change the theme?
+
+print(selft2)
+
+```
+
+Description
+-----------------------------------------------------------------------
+
+The actual description about these two diagram types is gonna be in this column.
+
+
+# Harmony & Pitch {data-icon="fa-musi"}
+
+Chromagrams
+-----------------------------------------------------------------------
+
+### Chromagram Song #1
+
+```{r, echo=FALSE}
 chroma1 <- "features/wietske-b-1.json" |>                           # Change the track
   compmus_chroma(norm = "manhattan") |>                 # Change the norm
   ggplot(aes(x = time, y = pc, fill = value)) + 
@@ -39,6 +182,11 @@ chroma1 <- "features/wietske-b-1.json" |>                           # Change the
   labs(x = "Time (s)", y = NULL, fill = NULL) +
   theme_classic()   # Change the theme?
 
+print(chroma1)
+```
+
+### Chromagram Song #2
+```{r, echo=FALSE}
 chroma2 <- "features/wietske-b-2.json" |>                           # Change the track
   compmus_chroma(norm = "manhattan") |>                 # Change the norm
   ggplot(aes(x = time, y = pc, fill = value)) + 
@@ -56,129 +204,15 @@ chroma2 <- "features/wietske-b-2.json" |>                           # Change the
   labs(x = "Time (s)", y = NULL, fill = NULL) +
   theme_classic()   # Change the theme?
 
-grid.arrange(chroma1, chroma2, ncol = 2)
+print(chroma2)
 ```
 
-### My ceptogram
 
-Column {data-width=500}
+Chordograms
+-----------------------------------------------------------------------
 
-```{r}
-cepto1 <- "features/wietske-b-1.json" |>                           # Change the track
-  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
-  ggplot(aes(x = time, y = mfcc, fill = value)) + 
-  geom_raster() +
-  scale_y_continuous(
-    breaks = 0:12,
-    minor_breaks = NULL
-  ) +
-  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = "Coefficient Number", fill = NULL) +
-  theme_classic()                                      # Change the theme?
-
-cepto2 <- "features/wietske-b-2.json" |>                           # Change the track
-  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
-  ggplot(aes(x = time, y = mfcc, fill = value)) + 
-  geom_raster() +
-  scale_y_continuous(
-    breaks = 0:12,
-    minor_breaks = NULL
-  ) +
-  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = "Coefficient Number", fill = NULL) +
-  theme_classic() # Change the theme?
-
-grid.arrange(cepto1, cepto2, ncol = 2)
-```
-
-Column 1
---------------------------------------------------
-
-
-### Analyzing my AI-generated MP3-files
-
-Hier komt een klein inleidend stukje over mijn files, hoe ik ze heb
-gegenereerd, welke prompts ik heb gebruikt en wat mijn verwachtingen
-zijn.
-
-
-Self-similarity {data-icon="fa-th-large"}
-===================================== 
-
-Column 1
---------------------------------------------------
-
-
-### My chroma-based self-similarity
-
-```{r}
-selfc1 <- "features/wietske-b-1.json" |>                           # Change the track
-  compmus_chroma(norm = "euclidean") |>                 # Change the norm
-  compmus_self_similarity(
-    feature = pc,
-    distance = "euclidean"                             # Change the distance
-  ) |>   
-  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
-  geom_raster() +
-  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = NULL, fill = NULL) +
-  theme_classic()                                      # Change the theme?
-
-selfc2 <- "features/wietske-b-2.json" |>                           # Change the track
-  compmus_chroma(norm = "euclidean") |>                 # Change the norm
-  compmus_self_similarity(
-    feature = pc,
-    distance = "euclidean"                             # Change the distance
-  ) |>   
-  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
-  geom_raster() +
-  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = NULL, fill = NULL) +
-  theme_classic()                                      # Change the theme?
-
-grid.arrange(selfc1, selfc2, ncol = 2)
-```
-
-Column 2
---------------------------------------------------
-
-
-### My timbre-based self-similarity
-
-```{r}
-selft1 <- "features/wietske-b-1.json" |>                           # Change the track
-  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
-  compmus_self_similarity(
-    feature = mfcc,
-    distance = "euclidean"                             # Change the distance
-  ) |>   
-  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
-  geom_raster() +
-  scale_fill_viridis_c(option = "inferno", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = NULL, fill = NULL) +
-  theme_classic()                                      # Change the theme?
-
-selft2 <- "features/wietske-b-2.json" |>                           # Change the track
-  compmus_mfccs(norm = "euclidean") |>                  # Change the norm
-  compmus_self_similarity(
-    feature = mfcc,
-    distance = "euclidean"                             # Change the distance
-  ) |>   
-  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
-  geom_raster() +
-  scale_fill_viridis_c(option = "inferno", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = NULL, fill = NULL) +
-  theme_classic()                                      # Change the theme?
-
-grid.arrange(selft1, selft2, ncol = 2)
-```
-
-Chordogram {data-icon="fa-music"}
-===================================== 
-
-### My chordogram
-
-```{r}
+### Song #1 Chordogram
+```{r, echo=FALSE}
 library("tibble")
 
 # C C# D Eb E F F# G Ab A Bb B
@@ -265,7 +299,11 @@ ggplot(aes(x = time, y = name, fill = d)) +
 # Try different norms (and match it with what you used in `compmus_chroma`)
 # Try different distance metrics ) 
 
+print(chord1)
+```
 
+### Song #2 Chordogram
+```{r, echo=FALSE}
 chord2 <- "features/wietske-b-2.json" |> 
 compmus_chroma(norm = "manhattan") |>
 compmus_match_pitch_templates(
@@ -279,21 +317,71 @@ ggplot(aes(x = time, y = name, fill = d)) +
   scale_fill_viridis_c(guide = "none") + 
   labs(x = "Time (s)", y = "Template", fill = NULL) + 
   theme_classic() 
+
+print(chord2)
 # Try different norms (and match it with what you used in `compmus_chroma`)
 # Try different distance metrics ) 
-
-grid.arrange(chord1, chord2, ncol = 2)
 ```
 
-Novelty functions {data-icon="fa-music"}
-===================================== 
 
-Column 1
---------------------------------------------------
 
-### Novelty function: Energy-based
+Chroma-based Self Similarity Matrices
+-----------------------------------------------------------------------
 
-```{r}
+### Song #1 Chroma-based Self Similarity Matrix
+
+```{r, echo=FALSE}
+
+selfc1 <- "features/wietske-b-1.json" |>                           # Change the track
+  compmus_chroma(norm = "euclidean") |>                 # Change the norm
+  compmus_self_similarity(
+    feature = pc,
+    distance = "euclidean"                             # Change the distance
+  ) |>   
+  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
+  geom_raster() +
+  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
+  labs(x = "Time (s)", y = NULL, fill = NULL) +
+  theme_classic()                                      # Change the theme?
+  coord_fixed(ratio = 1)
+
+print(selfc1)
+```
+
+### Song #2 Chroma-based Self Similarity Matrix
+```{r, echo=FALSE}
+
+selfc2 <- "features/wietske-b-2.json" |>                           # Change the track
+  compmus_chroma(norm = "euclidean") |>                 # Change the norm
+  compmus_self_similarity(
+    feature = pc,
+    distance = "euclidean"                             # Change the distance
+  ) |>   
+  ggplot(aes(x = xtime, y = ytime, fill = d)) + 
+  geom_raster() +
+  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
+  labs(x = "Time (s)", y = NULL, fill = NULL) +
+  theme_classic()                                      # Change the theme?
+  coord_fixed(ratio = 1)
+  
+print(selfc2)
+
+```
+
+Description
+-----------------------------------------------------------------------
+
+The actual description about these two diagram types is gonna be in this column.
+
+
+# Novelty functions {data-icon="fa-bolt"}
+
+Visual Song #1
+-----------------------------------------------------------------------
+
+### Energy-based Song #1
+
+```{r, echo=FALSE}
 nove1 <- "features/wietske-b-1.json" |>
   compmus_energy_novelty() |> 
   ggplot(aes(t, novelty)) +
@@ -301,23 +389,11 @@ nove1 <- "features/wietske-b-1.json" |>
   theme_minimal() +
   labs(x = "Time (s)", y = "Energy Novelty")
 
-nove2 <- "features/wietske-b-2.json" |>
-  compmus_energy_novelty() |> 
-  ggplot(aes(t, novelty)) +
-  geom_line() +
-  theme_minimal() +
-  labs(x = "Time (s)", y = "Energy Novelty")
-
-grid.arrange(nove1, nove2, ncol = 2)
+print(nove1)
 ```
 
-Column 2
---------------------------------------------------
-
-
-### Novelty function: Spectral-based
-
-```{r}
+### Spectral-Based Song #1
+```{r, echo=FALSE}
 novs1 <- "features/wietske-b-1.json" |>
   compmus_spectral_novelty() |> 
   ggplot(aes(t, novelty)) +
@@ -325,6 +401,27 @@ novs1 <- "features/wietske-b-1.json" |>
   theme_minimal() +
   labs(x = "Time (s)", y = "Spectral Novelty")
 
+print(novs1)
+```
+
+Visual Song #2
+-----------------------------------------------------------------------
+
+### Energy-based Song #2
+
+```{r, echo=FALSE}
+nove2 <- "features/wietske-b-2.json" |>
+  compmus_energy_novelty() |> 
+  ggplot(aes(t, novelty)) +
+  geom_line() +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "Energy Novelty")
+
+print(nove2)
+```
+
+### Spectral-based Song #2
+```{r, echo=FALSE}
 novs2 <- "features/wietske-b-2.json" |>
   compmus_spectral_novelty() |> 
   ggplot(aes(t, novelty)) +
@@ -332,19 +429,23 @@ novs2 <- "features/wietske-b-2.json" |>
   theme_minimal() +
   labs(x = "Time (s)", y = "Spectral Novelty")
 
-grid.arrange(novs1, novs2, ncol = 2)
+print(novs2)
 ```
 
-Tempograms {data-icon="fa-drum"}
-===================================== 
+Description
+-----------------------------------------------------------------------
 
-Column 1 
---------------------------------------------------
+This is gonna be a place where we discuss the diagrams.
 
 
-### Tempograms: cyclic=false
+# Rhythm and Tempo {data-icon="fa-drum"}
 
-```{r}
+Visuals Song cyclic = False
+-----------------------------------------------------------------------
+
+### Song #1; cyclic = False
+
+```{r, echo=FALSE}
 tempo1f <- "features/wietske-b-1.json" |>
   compmus_tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |>
   ggplot(aes(x = time, y = bpm, fill = power)) +
@@ -353,6 +454,11 @@ tempo1f <- "features/wietske-b-1.json" |>
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
 
+print(tempo1f)
+```
+
+### Tempogram Song #2: cyclic=false
+```{r, echo=FALSE}
 tempo2f <- "features/wietske-b-2.json" |>
   compmus_tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |>
   ggplot(aes(x = time, y = bpm, fill = power)) +
@@ -361,27 +467,37 @@ tempo2f <- "features/wietske-b-2.json" |>
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
 
-grid.arrange(tempo1f, tempo2f, ncol = 2)
+print(tempo2f)
 ```
 
-Column 1 
---------------------------------------------------
+Visuals Song cyclic is True
+-----------------------------------------------------------------------
 
-### Tempograms: cyclic=true
-
-```{r} 
+### Song # 1; cyclic = True
+```{r, echo=FALSE}
 tempo1t <- "features/wietske-b-1.json" |> compmus_tempogram(window_size
 = 8, hop_size = 1, cyclic = TRUE) |> ggplot(aes(x = time, y = bpm,
 fill = power)) + geom_raster() + scale_fill_viridis_c(guide = "none") +
 labs(x = "Time (s)", y = "Tempo (BPM)") + theme_classic()
 
+print(tempo1t)
+```
+
+### Tempogram Song #2: cyclic=true
+
+```{r, echo=FALSE}
 tempo2t <- "features/wietske-b-2.json" |> compmus_tempogram(window_size
 = 8, hop_size = 1, cyclic = TRUE) |> ggplot(aes(x = time, y = bpm,
 fill = power)) + geom_raster() + scale_fill_viridis_c(guide = "none") +
 labs(x = "Time (s)", y = "Tempo (BPM)") + theme_classic()
 
-grid.arrange(tempo1t, tempo2t, ncol = 2)
+print(tempo2t)
 ```
+
+Description
+-----------------------------------------------------------------------
+
+This is gonna be a place where we discuss the diagrams.
 
 
 ```{r, echo=FALSE}
@@ -429,19 +545,7 @@ cluster_juice <-
 compmus_dist <- dist(cluster_juice, method = "euclidean")
 ```
 
-Week 12: Hierarchical Clustering {data-icon="fa-music"}
-===================================== 
-
-```{r}
-
-compmus_dist |> 
-  hclust(method = "single") |> # Try single, average, and complete.
-  dendro_data() |>
-  ggdendrogram()
-```
-
-Week 12: Heat Map {data-icon="fa-chart-area"}
-===================================== 
+# Week 12: Heat Map {data-icon="fa-chart-area"}
 
 ```{r}
 heatmaply(
@@ -452,9 +556,7 @@ heatmaply(
 )
 ```
 
-
-Week 12: Classification {data-icon="fa-chart-area"}
-===================================== 
+# Week 12: Classification {data-icon="fa-chart-area"}
 
 ```{r}
 compmus2025_filtered <- 
@@ -499,9 +601,7 @@ classification_knn |> get_pr()
 
 ```
 
-
-Week 12: Random Forest {data-icon="fa-chart-area"}
-===================================== 
+# Week 12: Random Forest {data-icon="fa-chart-area"}
 
 ```{r}
 forest_model <-
