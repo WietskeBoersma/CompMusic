@@ -19,7 +19,7 @@ Visualizations {data-icon="fa-signal"}
 Column 1
 --------------------------------------------------
 
-### Chromagram using "wietske-b-1.json" file and ceptogram
+### Chromagram using "wietske-b-1.json" file and ceptogram lala
 
 ```{r}
 chroma1 <- "features/wietske-b-1.json" |>                           # Change the track
