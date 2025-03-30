@@ -16,7 +16,10 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Introduction {data-icon="fa-headphones"}
 
-Welcome to my portfolio for Computational Musicology!
+Structure
+-----------------------------------------------------------------------
+
+#### Welcome to my portfolio for Computational Musicology!
 
 For this portfolio I analyzed two songs using a variety of different metrics. These metrics helped me understand how my songs were structured, including aspects such as timbre and tempo. By applying computational methods, I was able to extract meaningful insights and identify patterns within the songs. The analysis provided a deeper understanding of how musical elements come together to form the unique sound of each track.
 
@@ -73,12 +76,17 @@ cat(paste0('<audio controls preload="none">
 
 ```
 
+#### Structure
+
+For this portfolio I will walk you through the analysis of these two songs. We will first focus on the analysis of just the two songs. From timbre, to harmony and then to rhythm. This reflects how we perceive music - first the overall sound color, then the harmonic structure, and finally the rhythm. And finally, compare the songs to the entire class corpus to analyze how they are positioned within the dataset in terms of musical features.
+
+
 # Timbre {data-icon="fa-palette"}
 
 Visual Song #1
 -----------------------------------------------------------------------
 
-### Ceptogram Song #1
+### Cepstrogram Song #1
 ```{r,echo=FALSE}
 cepto1 <- "features/wietske-b-1.json" |>                           # Change the track
   compmus_mfccs(norm = "euclidean") |>                  # Change the norm
@@ -88,14 +96,14 @@ cepto1 <- "features/wietske-b-1.json" |>                           # Change the 
     breaks = 0:12,
     minor_breaks = NULL
   ) +
-  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = "Coefficient Number", fill = NULL) +
-  theme_classic()                                      # Change the theme?
+    scale_fill_viridis_c(option = "plasma", name = "") + # Added name for the legend
+  labs(x = "Time (s)", y = "Coefficient Number") + # Removed fill = NULL
+  theme_classic()                                       # Change the theme?
 
 print(cepto1)
 ```
 
-### Song #1 Timbre-based Self-Similarity Matrix
+### Timbre-based SSM Song #1
 ```{r, echo=FALSE}
 selft1 <- "features/wietske-b-1.json" |>                           # Change the track
   compmus_mfccs(norm = "euclidean") |>                  # Change the norm
@@ -105,8 +113,8 @@ selft1 <- "features/wietske-b-1.json" |>                           # Change the 
   ) |>   
   ggplot(aes(x = xtime, y = ytime, fill = d)) + 
   geom_raster() +
-  scale_fill_viridis_c(option = "inferno", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = NULL, fill = NULL) +
+  scale_fill_viridis_c(option = "inferno", name = "Similarity") +               # Change the colours?
+  labs(x = "Time (s)", y = "Time (s)") +
   theme_classic()                                      # Change the theme?
 
 print(selft1)
@@ -115,7 +123,7 @@ print(selft1)
 Visuals Song #2
 -----------------------------------------------------------------------
 
-### Ceptogram Song #2
+### Cepstrogram Song #2
 
 ```{r, echo=FALSE}
 cepto2 <- "features/wietske-b-2.json" |>                           # Change the track
@@ -126,14 +134,14 @@ cepto2 <- "features/wietske-b-2.json" |>                           # Change the 
     breaks = 0:12,
     minor_breaks = NULL
   ) +
-  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = "Coefficient Number", fill = NULL) +
-  theme_classic() # Change the theme?
+  scale_fill_viridis_c(option = "plasma", name = "") + # Added name for the legend
+  labs(x = "Time (s)", y = "Coefficient Number") + # Removed fill = NULL
+  theme_classic() 
 
 print(cepto2)
 ```
 
-### Song #2 Timbre-based
+### Timbre-based SSM Song #2
 ```{r, echo=FALSE}
 selft2 <- "features/wietske-b-2.json" |>                           # Change the track
   compmus_mfccs(norm = "euclidean") |>                  # Change the norm
@@ -143,8 +151,8 @@ selft2 <- "features/wietske-b-2.json" |>                           # Change the 
   ) |>   
   ggplot(aes(x = xtime, y = ytime, fill = d)) + 
   geom_raster() +
-  scale_fill_viridis_c(option = "inferno", guide = "none") +               # Change the colours?
-  labs(x = "Time (s)", y = NULL, fill = NULL) +
+  scale_fill_viridis_c(option = "inferno", name = "Similarity") +               # Change the colours?
+  labs(x = "Time (s)", y = "Time (s)") +
   theme_classic()                                      # Change the theme?
 
 print(selft2)
@@ -154,10 +162,27 @@ print(selft2)
 Description
 -----------------------------------------------------------------------
 
-The actual description about these two diagram types is gonna be in this column.
+### Cepstrograms 
 
+The cepstrograms help us see how the 'sound color' of a song changes. Dark blue means a quiet sound feature, and yellow means a loud one. The bottom of the diagram shows the basic tones, and the top shows the finer details like brightness and texture.
 
-# Harmony & Pitch {data-icon="fa-musi"}
+In the first song's diagram, the colors stay mostly yellow and orange, meaning the sound color stays pretty steady. There are no big jumps from dark to bright, so the song doesn't have any sudden loud parts or dramatic changes. The bottom of the picture is also bright, showing that the main tones are strong. The top is mostly the same color, meaning the sound texture is stable. This matches what we hear: the instruments play steadily, and the sound color doesn't change much.
+
+The second song's diagram is a bit different. We see a little more activity at the top, around number 3, but the strongest activity is still around number 1. This means the song has some small sound changes, but nothing too big. It also suggests we're hearing two main instruments with different sound colors. When we listen, we can clearly hear the electric guitar and drums, which could correspond to the activity around the two coefficients. These instruments create the main sound and feel of this song.
+
+### SSM
+
+Looking at the self-similarity matrix (SSM) for the first song, we can see clear 'block-like' patterns. These patterns tell us that there are sections of the song where the overall sound, or timbre, stays very consistent. For example, there's a large block that starts around 60 seconds and lasts until about 120 seconds. If we listen to the song, we can hear a change around 50-60 seconds, and then the sound remains quite homogenous for the next minute. We also notice a similar block from about 130 to 170 seconds.
+
+Interestingly, apart from the main diagonal line (which just shows that every moment is identical to itself), there are no clear diagonal lines. This suggests that while the song might feel repetitive, it doesn't have repeating patterns of timbre. Instead, it has sections where the overall 'sound color' remains the same. The predominantly dark tones in the SSM indicate that, on a timbre level, the song is fairly consistent throughout.
+
+For the second song the SSM is a bit harder to analyze, as there is no classic block-like structure nor a classic path-like structure present in the diagram. There seems to be a 'build-up' in similarity concerning the timbre in the song, at the start there seems to be a lot more dissimilar parts, then in the second part. In the second part of the song there seems to be a block starting at around 75 seconds until the end, which contains very similar parts concerning the timbre of the song, with only one 'stripe' of dissimilarity crossing it vertically (and horizontally of course). 
+
+### Conclusion
+
+Concluding, there are quite a few differences between the two songs, if you're looking at the timbre of the songs. While the timbre of the first song seems to stay stable at coefficient = 1, the timbre of the second song seems to include two distinct sound colors, probably caused by the two main instruments you hear; electric guitar and drums. While the timbre of the first song seems to be more homogenous at certain time stamps in the song, the second song seems to become more and more similar while the song progresses.
+
+# Harmony & Pitch {data-icon="fa-music"}
 
 Chromagrams
 -----------------------------------------------------------------------
@@ -178,7 +203,7 @@ chroma1 <- "features/wietske-b-1.json" |>                           # Change the
                 "G#|Ab", "A", "A#|Bb", "B"
               )
   ) +
-  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
+  scale_fill_viridis_c(name="",option = "plasma") +               # Change the colours?
   labs(x = "Time (s)", y = NULL, fill = NULL) +
   theme_classic()   # Change the theme?
 
@@ -200,7 +225,7 @@ chroma2 <- "features/wietske-b-2.json" |>                           # Change the
                 "G#|Ab", "A", "A#|Bb", "B"
               )
   ) +
-  scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
+  scale_fill_viridis_c(name="", option = "plasma") +               # Change the colours?
   labs(x = "Time (s)", y = NULL, fill = NULL) +
   theme_classic()   # Change the theme?
 
@@ -293,8 +318,8 @@ compmus_match_pitch_templates(
 
 ggplot(aes(x = time, y = name, fill = d)) + 
   geom_raster() + 
-  scale_fill_viridis_c(guide = "none") + 
-  labs(x = "Time (s)", y = "Template", fill = NULL) + 
+  scale_fill_viridis_c(name = "") + 
+  labs(x = "Time (s)", y = "", fill = NULL) + 
   theme_classic() 
 # Try different norms (and match it with what you used in `compmus_chroma`)
 # Try different distance metrics ) 
@@ -314,8 +339,8 @@ compmus_match_pitch_templates(
 
 ggplot(aes(x = time, y = name, fill = d)) + 
   geom_raster() + 
-  scale_fill_viridis_c(guide = "none") + 
-  labs(x = "Time (s)", y = "Template", fill = NULL) + 
+  scale_fill_viridis_c(name = "") + 
+  labs(x = "Time (s)", y = "", fill = NULL) + 
   theme_classic() 
 
 print(chord2)
@@ -323,7 +348,15 @@ print(chord2)
 # Try different distance metrics ) 
 ```
 
+Description
+-----------------------------------------------------------------------
+So now we're moving on to the harmony of the songs. The harmony of these two songs are shown using the chromagrams and chordograms. When comparing the chromagrams you can spot a few differences. For the first song you can see the pitch classes around F# / Gb are mostly light colored, which indicates a presence of these classes. In the last part the lower pitch classes like A and B become more present. Overall there is a lot of variation in pitch classes within this song. This also counts for the second song, where the start is mostly dominated by the lowest pitch class B, but this presence declines, a bit and other pitch classes become more present, such as C, D and F#/Gb. 
+The presence of the lower pitch class in the second song can be derived from the fact that mostly electric guitar and drums are present, which produce lower pitches like B.
 
+The chordograms are not as intuitive as the chromagrams, it is harder to gain insight in what is actually shown. For both I used the cosine distance and the chord templates. The lighter parts are the chords played, as you can see for both songs it seems there are a lot of different chords played at the same time, which is very confusing. In this case it is therefore better to focus on the chromagrams, when analyzing the harmony of both songs.
+
+
+# Harmony & Pitch 2 {data-icon="fa-music"}
 
 Chroma-based Self Similarity Matrices
 -----------------------------------------------------------------------
@@ -344,8 +377,9 @@ selfc1 <- "features/wietske-b-1.json" |>                           # Change the 
   labs(x = "Time (s)", y = NULL, fill = NULL) +
   theme_classic()                                      # Change the theme?
   coord_fixed(ratio = 1)
+  
+  print(selfc1)
 
-print(selfc1)
 ```
 
 ### Song #2 Chroma-based Self Similarity Matrix
@@ -357,21 +391,25 @@ selfc2 <- "features/wietske-b-2.json" |>                           # Change the 
     feature = pc,
     distance = "euclidean"                             # Change the distance
   ) |>   
+
   ggplot(aes(x = xtime, y = ytime, fill = d)) + 
   geom_raster() +
   scale_fill_viridis_c(option = "plasma", guide = "none") +               # Change the colours?
   labs(x = "Time (s)", y = NULL, fill = NULL) +
   theme_classic()                                      # Change the theme?
   coord_fixed(ratio = 1)
-  
-print(selfc2)
 
+  print(selfc2)
 ```
 
 Description
 -----------------------------------------------------------------------
 
-The actual description about these two diagram types is gonna be in this column.
+Just like we looked at the timbre-based SSMs, we can also look at SSMs based on chroma, which tells us about the chords and pitches in the songs. In both songs, we see 'block-like' patterns, meaning there are sections where the chords and pitches stay pretty much the same. However, the size of these blocks is different.
+
+In the first song, the blocks are quite long, about 10-20 seconds. This means that for those periods, the chords and pitches are very homogenous But in the second song, the blocks are shorter, usually no more than 5-10 seconds. This tells us that the chords and pitches change more often in the second song.
+
+So, we can say that the first song has longer stretches where the chords and pitches are stable, while the second song has more frequent changes. This fits with what we saw in the chromagrams, where the first song also showed more stable chroma than the second song.
 
 
 # Novelty functions {data-icon="fa-bolt"}
@@ -435,45 +473,15 @@ print(novs2)
 Description
 -----------------------------------------------------------------------
 
-This is gonna be a place where we discuss the diagrams.
+We have used two different types of novelty functions. Namely, energy-based novelty functions and spectral-based novelty functions. The energy-based novelty function is better suited for songs with a strong onset/beat. Spectral-based novelty is more suitable for songs with a more melodic sound, and a less present beat. If we look at the first energy-based function it shows a few peaks, but not as much as it does with the second song, where there seems to be a bit more of a stable beat. The spectral-based function shows a more interesting diagram for the first song, compared to the energy-based function. This can be explained by the fact that this song is more melodic, and does not have such a strong beat, which makes the spectral-based function more fitting and interesting. On the other hand, for the second song is the energy-based function a better fit. The drums cause a strong beat which is more fitting for the energy-based function. For example, it tells us there is a big onset around 150 seconds, which is clearly audible in the song.
 
 
 # Rhythm and Tempo {data-icon="fa-drum"}
 
-Visuals Song cyclic = False
------------------------------------------------------------------------
-
-### Song #1; cyclic = False
-
-```{r, echo=FALSE}
-tempo1f <- "features/wietske-b-1.json" |>
-  compmus_tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |>
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)") +
-  theme_classic()
-
-print(tempo1f)
-```
-
-### Tempogram Song #2: cyclic=false
-```{r, echo=FALSE}
-tempo2f <- "features/wietske-b-2.json" |>
-  compmus_tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |>
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)") +
-  theme_classic()
-
-print(tempo2f)
-```
-
 Visuals Song cyclic is True
 -----------------------------------------------------------------------
 
-### Song # 1; cyclic = True
+### Tempogram Song #1
 ```{r, echo=FALSE}
 tempo1t <- "features/wietske-b-1.json" |> compmus_tempogram(window_size
 = 8, hop_size = 1, cyclic = TRUE) |> ggplot(aes(x = time, y = bpm,
@@ -483,7 +491,7 @@ labs(x = "Time (s)", y = "Tempo (BPM)") + theme_classic()
 print(tempo1t)
 ```
 
-### Tempogram Song #2: cyclic=true
+### Tempogram Song #2
 
 ```{r, echo=FALSE}
 tempo2t <- "features/wietske-b-2.json" |> compmus_tempogram(window_size
@@ -497,7 +505,11 @@ print(tempo2t)
 Description
 -----------------------------------------------------------------------
 
-This is gonna be a place where we discuss the diagrams.
+Now onto the tempo and rhythm of my songs. These are the tempograms for the two songs. It shows an alternating tempo of around 140 BPM. Although the song does sound a bit repetitive, and this was also supported by both SSM's, the tempogram does not really show this. This alternating tempo is probably caused by the fact that it is, as metioned before, more of a melodic song than a song with a strict tempo. 
+
+On the other hand, the second song does seem to have quite a strict tempo, which is a bit higher than the other one, it's about 150 BPM. This can be derived, again, from the drums which produce a strong beat.
+
+Therefore we can conclude that a tempogram might not be as informative nor relevant for the first song as it is for the second song.
 
 
 ```{r, echo=FALSE}
@@ -545,7 +557,10 @@ cluster_juice <-
 compmus_dist <- dist(cluster_juice, method = "euclidean")
 ```
 
-# Week 12: Heat Map {data-icon="fa-chart-area"}
+# Class Corpus AI Analysis: Heat Map {data-icon="fa-chart-area"}
+
+HeatMap
+-----------------------------------------------------------------------
 
 ```{r}
 heatmaply(
@@ -556,7 +571,17 @@ heatmaply(
 )
 ```
 
-# Week 12: Classification {data-icon="fa-chart-area"}
+Description
+-----------------------------------------------------------------------
+Now that we have analyzed both songs deeply, we are moving on to the last part of this portfolio: the class corpus. We are gonna take a look at how my songs fit into the class corpus. First up: The Heat Map. This heat map gives insight in where my songs are placed compared to the other songs in the corpus concerning the valence, arousal, danceability, instrumentalness and tempo. To look at the heat map properly, you need to zoom in a bit.
+
+For the first song, the valence and arousal show quite low values around -0.8. While the danceability (0.4), instrumentalness (0.3) and tempo (1.3) show increasingly higher values.
+
+For the second song, it shows a valence, instrumentalness and arousal value of around 0. Danceability of around 1.6, and tempo shows a relatively low value of around -1.1.
+
+From this we can conclude that the first song has high valence and arousal, while the second song has a medium valence and arousal. The instrumentalness of the first song is medium, just like the second song. The danceability for the first song is also medium, and low for the second song. And the tempo is relatively low for the first song and high for the second (as we already knew).
+
+# Class Corpus AI Analysis: Classification {data-icon="fa-chart-area"}
 
 ```{r}
 compmus2025_filtered <- 
@@ -601,7 +626,13 @@ classification_knn |> get_pr()
 
 ```
 
-# Week 12: Random Forest {data-icon="fa-chart-area"}
+Description
+-----------------------------------------------------------------------
+
+We also built a classification model to using the class corpus, namely a KNN-model. It is classifier that predicts whether a song in the class corpus is AI-generated or not. Looking at the precision and recall of the model we can conclude that the AI class has higher precision and recall than the Non-AI class, suggesting that the model is better at predicting AI-generated songs. However, there’s still room for improvement in both precision and recall for both classes, since none of the values are particularly high.
+
+
+# Class Corpus AI Analysis: Random Forest {data-icon="fa-chart-area"}
 
 ```{r}
 forest_model <-
@@ -647,3 +678,18 @@ compmus2025_filtered |>
 
 
 ```
+
+Description
+-----------------------------------------------------------------------
+
+On to the last part; the Random Forest. First we created a feature importance diagram, where arousal was apparently the most important feature. We used this for the Random Forest and the scatter plot shows the result. From the scatter plot you can't really draw any straight forward conclusions, as the yellow and purple dots don't seem to cluster together as clearly as we would have liked to see. Bigger dots represent higher tempo, and even this feature can't be used to draw any hard conclusions. Therefore this random forest does not bring us any new information, like we hoped it would.
+
+# Conclusion
+
+During this project I analyzed two of my own AI-generated songs. These songs where two very different songs, and this also resulted from the analyses I performed. 
+
+From the Self-Similarity Matrices to the Tempograms, almost every diagram showed the difference between these two, in all kinds of ways. It showed that the first song has more of a melodic tune with more homogenous sound of longer duration, aswell for timbre as for chroma. The melodic tune of the song is also supported by the spectral-based novelty function, which was a much better fit than the energy-based function. Also the pitch seemed to be a bit higher compared to the second song, which can be derived from the chromagrams.
+
+For the second song it showed that there was a strong beat, produced by the drums most likely, in the tempogram and in the energy-based novelty function, which came out as a better fit for this song. The pitch seemed to be a bit lower overall compared to the first song, following the chromagram. Also the presence of two main instruments, namely the drums and the electric guitar made the cepstrogram stand out from the one from the first song.
+
+Overall this project helped me gain an insight in the differences between songs, and on how many levels this can be analyzed and justified, with the support of all these different types of diagrams. It is truly mindblowing!
