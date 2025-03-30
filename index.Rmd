@@ -411,6 +411,7 @@ In the first song, the blocks are quite long, about 10-20 seconds. This means th
 
 So, we can say that the first song has longer stretches where the chords and pitches are stable, while the second song has more frequent changes. This fits with what we saw in the chromagrams, where the first song also showed more stable chroma than the second song.
 
+NB: I am aware that there is code behind the diagrams, but I can't figure out how to get rid of it.
 
 # Novelty functions {data-icon="fa-bolt"}
 
